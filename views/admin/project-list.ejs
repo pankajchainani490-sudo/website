@@ -1,0 +1,88 @@
+<%- include('../partials/header') %>
+
+<div class="admin-actions">
+  <div>
+    <a href="/admin" style="font-size: 0.9rem; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 0.25rem; margin-bottom: 0.5rem;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: scaleX(-1);">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+      Back to Dashboard
+    </a>
+    <h1 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1px;">Project Showcase Management</h1>
+  </div>
+  <a href="/admin/projects/new" class="btn btn-primary">➕ Add Project</a>
+</div>
+
+<div class="admin-table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th style="width: 80px; text-align: center;">Icon</th>
+        <th>Project Name</th>
+        <th>Target URL / Router Link</th>
+        <th>Category</th>
+        <th style="width: 100px; text-align: center;">Sort Order</th>
+        <th style="width: 100px; text-align: center;">Status</th>
+        <th style="width: 220px; text-align: center;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (projects && projects.length > 0) { %>
+        <% projects.forEach(project => { %>
+          <tr>
+            <td style="text-align: center; font-size: 1.5rem;"><%= project.icon || '🚀' %></td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-primary);"><%= project.name %></div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">
+                <%= project.description ? (project.description.slice(0, 40) + (project.description.length > 40 ? '...' : '')) : 'No project description' %>
+              </div>
+            </td>
+            <td>
+              <a href="<%= project.url %>" target="_blank" rel="noopener noreferrer" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--primary); text-decoration: underline;">
+                <%= project.url %>
+              </a>
+            </td>
+            <td>
+              <span class="blog-tag" style="font-size: 0.7rem;"><%= project.category || 'Uncategorized' %></span>
+            </td>
+            <td style="text-align: center; font-family: var(--font-mono); font-weight: 600;">
+              <%= project.sort_order %>
+            </td>
+            <td style="text-align: center;">
+              <% if (project.is_visible === 1) { %>
+                <span class="badge badge-success">Visible</span>
+              <% } else { %>
+                <span class="badge badge-warning">Hidden</span>
+              <% } %>
+            </td>
+            <td style="text-align: center;">
+              <div class="btn-group" style="justify-content: center;">
+                <a href="/admin/projects/toggle/<%= project.id %>" class="btn btn-secondary btn-xs">
+                  <%= project.is_visible === 1 ? 'Hide' : 'Show' %>
+                </a>
+                <a href="/admin/projects/edit/<%= project.id %>" class="btn btn-secondary btn-xs" style="color: var(--primary);">
+                  Edit
+                </a>
+                <a href="/admin/projects/delete/<%= project.id %>" 
+                   onclick="return confirm('Are you sure you want to permanently delete &quot;<%= project.name %>&quot;? This action is irreversible!')" 
+                   class="btn btn-secondary btn-xs" 
+                   style="color: hsl(350, 70%, 55%); border-color: hsla(350, 70%, 55%, 0.15);">
+                  Delete
+                </a>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 4rem;">
+            No showcase project cards have been configured yet. Click "Add Project" in the top right to start adding!
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

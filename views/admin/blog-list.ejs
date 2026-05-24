@@ -1,0 +1,88 @@
+<%- include('../partials/header') %>
+
+<div class="admin-actions">
+  <div>
+    <a href="/admin" style="font-size: 0.9rem; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 0.25rem; margin-bottom: 0.5rem;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: scaleX(-1);">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+      Back to Dashboard
+    </a>
+    <h1 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1px;">Blog Management</h1>
+  </div>
+  <a href="/admin/posts/new" class="btn btn-primary">➕ Create Post</a>
+</div>
+
+<div class="admin-table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th style="width: 80px;">ID</th>
+        <th>Title</th>
+        <th>Tags</th>
+        <th>Date Created</th>
+        <th style="width: 120px; text-align: center;">Status</th>
+        <th style="width: 220px; text-align: center;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (posts && posts.length > 0) { %>
+        <% posts.forEach(post => { %>
+          <tr>
+            <td style="color: var(--text-muted); font-family: var(--font-mono);"><%= post.id %></td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-primary);"><%= post.title %></div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 0.15rem;">
+                /<%= post.slug %>
+              </div>
+            </td>
+            <td>
+              <% if (post.tags) { %>
+                <% post.tags.split(',').forEach(tag => { %>
+                  <span class="blog-tag" style="font-size: 0.7rem; margin-right: 0.15rem;"><%= tag.trim() %></span>
+                <% }) %>
+              <% } else { %>
+                <span style="color: var(--text-muted); font-size: 0.85rem;">-</span>
+              <% } %>
+            </td>
+            <td style="color: var(--text-secondary); font-size: 0.85rem;">
+              <%= new Date(post.created_at).toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}) %>
+            </td>
+            <td style="text-align: center;">
+              <% if (post.is_published === 1) { %>
+                <span class="badge badge-success">Published</span>
+              <% } else { %>
+                <span class="badge badge-warning">Draft</span>
+              <% } %>
+            </td>
+            <td style="text-align: center;">
+              <div class="btn-group" style="justify-content: center;">
+                <a href="/admin/posts/toggle/<%= post.id %>" class="btn btn-secondary btn-xs">
+                  <%= post.is_published === 1 ? 'Draft' : 'Publish' %>
+                </a>
+                <a href="/admin/posts/edit/<%= post.id %>" class="btn btn-secondary btn-xs" style="color: var(--primary);">
+                  Edit
+                </a>
+                <a href="/admin/posts/delete/<%= post.id %>" 
+                   onclick="return confirm('Are you sure you want to permanently delete &quot;<%= post.title %>&quot;? This action cannot be undone!')" 
+                   class="btn btn-secondary btn-xs" 
+                   style="color: hsl(350, 70%, 55%); border-color: hsla(350, 70%, 55%, 0.15);">
+                  Delete
+                </a>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 4rem;">
+            You haven't written any blog posts yet. Click "Create Post" in the top right to start writing!
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

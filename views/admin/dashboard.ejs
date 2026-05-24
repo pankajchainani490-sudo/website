@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+
+<div style="margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: center;">
+  <div>
+    <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem;">Dashboard</h1>
+    <p style="color: var(--text-secondary);">Welcome back, Admin! Manage your blog posts and showcase projects here.</p>
+  </div>
+  <a href="/admin/logout" class="btn btn-secondary" style="color: hsl(350, 70%, 55%); border-color: hsla(350, 70%, 55%, 0.2);">Logout</a>
+</div>
+
+<!-- Stats Overview -->
+<div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+  <div class="card" style="padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-surface);">
+    <div>
+      <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Total Posts</div>
+      <div style="font-size: 2rem; font-weight: 800; margin-top: 0.25rem;"><%= stats.postsCount %></div>
+    </div>
+    <div style="font-size: 1.5rem; background-color: var(--primary-glow); color: var(--primary); width: 2.75rem; height: 2.75rem; border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center;">📝</div>
+  </div>
+
+  <div class="card" style="padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-surface);">
+    <div>
+      <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Drafts</div>
+      <div style="font-size: 2rem; font-weight: 800; margin-top: 0.25rem;"><%= stats.draftsCount %></div>
+    </div>
+    <div style="font-size: 1.5rem; background-color: hsla(35, 100%, 50%, 0.1); color: hsl(35, 100%, 50%); width: 2.75rem; height: 2.75rem; border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center;">🗂️</div>
+  </div>
+
+  <div class="card" style="padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-surface);">
+    <div>
+      <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Projects</div>
+      <div style="font-size: 2rem; font-weight: 800; margin-top: 0.25rem;"><%= stats.projectsCount %></div>
+    </div>
+    <div style="font-size: 1.5rem; background-color: var(--accent-glow); color: var(--accent); width: 2.75rem; height: 2.75rem; border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center;">⚙️</div>
+  </div>
+</div>
+
+<div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+  <div class="card">
+    <div style="font-size: 2rem; margin-bottom: 1rem;">✍️</div>
+    <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">Blog Management</h3>
+    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; flex-grow: 1;">
+      Create, edit, and delete your blog posts with real-time Markdown preview.
+    </p>
+    <a href="/admin/posts" class="btn btn-primary" style="font-size: 0.85rem; width: 100%;">Manage Posts</a>
+  </div>
+
+  <div class="card">
+    <div style="font-size: 2rem; margin-bottom: 1rem;">🛠️</div>
+    <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">Project Management</h3>
+    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; flex-grow: 1;">
+      Add or configure project cards with sorting order and router links.
+    </p>
+    <a href="/admin/projects" class="btn btn-primary" style="font-size: 0.85rem; width: 100%;">Manage Projects</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

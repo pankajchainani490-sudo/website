@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+
+<article style="padding: 2rem 0;">
+  <header class="blog-header">
+    <div class="blog-header-meta">
+      <time><%= new Date(post.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}) %></time>
+      <% if (post.tags) { %>
+        <div>
+          <% post.tags.split(',').forEach(tag => { %>
+            <span class="blog-tag" style="margin: 0 0.15rem;"><%= tag.trim() %></span>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+    <h1 style="margin-top: 1rem;"><%= post.title %></h1>
+    <% if (post.summary) { %>
+      <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 600px; margin: 1rem auto 0 auto;"><%= post.summary %></p>
+    <% } %>
+  </header>
+
+  <!-- Blog content (HTML parsed in router) -->
+  <div class="blog-content">
+    <%- post.htmlContent %>
+  </div>
+</article>
+
+<div style="max-width: 720px; margin: 4rem auto 0 auto; border-top: 1px solid var(--border-color); padding-top: 2rem; display: flex; justify-content: space-between;">
+  <a href="/blog" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: scaleX(-1); margin-right: 0.25rem; display: inline-block; vertical-align: middle;">
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+      <polyline points="12 5 19 12 12 19"></polyline>
+    </svg>
+    <span style="vertical-align: middle;">Back to Blog</span>
+  </a>
+</div>
+
+<!-- Highlight.js Initialization -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+<%- include('../partials/footer') %>

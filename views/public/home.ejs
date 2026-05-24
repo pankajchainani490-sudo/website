@@ -1,0 +1,95 @@
+<%- include('../partials/header') %>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <!-- Badge removed per user request -->
+  <h1 class="hero-title"><span class="gradient-text">world gcd</span></h1>
+  <p class="hero-subtitle">Welcome to my personal website. Here, I document my development journey, share technical insights, and showcase various projects deployed on this server.</p>
+  <div class="hero-buttons">
+    <a href="/projects" class="btn btn-primary">Explore Projects</a>
+    <a href="/blog" class="btn btn-secondary">Read Articles</a>
+  </div>
+</section>
+
+<!-- Latest Articles Section -->
+<section>
+  <div class="section-title-wrap">
+    <h2 class="section-title">Latest Articles</h2>
+    <a href="/blog" class="section-more">
+      <span>All Articles</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </a>
+  </div>
+
+  <div class="card-grid">
+    <% if (latestPosts && latestPosts.length > 0) { %>
+      <% latestPosts.forEach(post => { %>
+        <article class="card blog-card">
+          <div class="blog-meta">
+            <time><%= new Date(post.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}) %></time>
+            <% if (post.tags) { %>
+              <span class="blog-tag"><%= post.tags.split(',')[0] %></span>
+            <% } %>
+          </div>
+          <h3 class="blog-card-title">
+            <a href="/blog/<%= post.slug %>"><%= post.title %></a>
+          </h3>
+          <p class="blog-card-summary"><%= post.summary || 'No summary available' %></p>
+          <a href="/blog/<%= post.slug %>" class="btn btn-secondary" style="align-self: flex-start; padding: 0.4rem 0.8rem; font-size: 0.85rem;">Read More</a>
+        </article>
+      <% }) %>
+    <% } else { %>
+      <div class="card" style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); padding: 3rem;">
+        <p>No articles have been published yet. Please add them in the admin dashboard!</p>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Featured Projects Section -->
+<section>
+  <div class="section-title-wrap">
+    <h2 class="section-title">Featured Projects</h2>
+    <a href="/projects" class="section-more">
+      <span>All Projects</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </a>
+  </div>
+
+  <div class="card-grid">
+    <% if (featuredProjects && featuredProjects.length > 0) { %>
+      <% featuredProjects.forEach(project => { %>
+        <div class="card project-card">
+          <div class="project-icon">
+            <%= project.icon || '🚀' %>
+          </div>
+          <div class="project-info">
+            <h3 class="project-title">
+              <a href="<%= project.url %>" target="_blank" rel="noopener noreferrer">
+                <%= project.name %>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </h3>
+            <p class="project-desc"><%= project.description || 'No description available' %></p>
+            <span class="project-category"><%= project.category || 'Project' %></span>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="card" style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); padding: 3rem;">
+        <p>No projects have been featured yet. Please add them in the admin dashboard!</p>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

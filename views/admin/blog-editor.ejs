@@ -1,0 +1,150 @@
+<%- include('../partials/header') %>
+
+<!-- Include client-side Markdown rendering and highlight libraries (for real-time preview) -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<div style="margin-bottom: 2rem;">
+  <a href="/admin/posts" style="font-size: 0.9rem; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 0.25rem; margin-bottom: 0.5rem;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: scaleX(-1);">
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+      <polyline points="12 5 19 12 12 19"></polyline>
+    </svg>
+    Back to List
+  </a>
+  <h1 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1px;"><%= isEdit ? 'Edit Blog Post' : 'Create New Blog Post' %></h1>
+</div>
+
+<form action="<%= isEdit ? '/admin/posts/edit/' + post.id : '/admin/posts/new' %>" method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
+  
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+    <!-- Left side basic fields -->
+    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <div class="form-group" style="margin: 0;">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" required value="<%= post.title %>" class="form-control" placeholder="Enter a catchy title...">
+      </div>
+
+      <div class="form-group" style="margin: 0;">
+        <label for="slug">URL Slug (Unique Identifier)</label>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="text" id="slug" name="slug" required value="<%= post.slug %>" class="form-control" placeholder="my-new-article-slug" style="font-family: var(--font-mono);">
+          <button type="button" id="btn-gen-slug" class="btn btn-secondary" style="white-space: nowrap; padding: 0.75rem 1rem; font-size: 0.85rem;">Generate</button>
+        </div>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Used in URL path, e.g., /blog/my-new-article-slug. Only lowercase letters, numbers, and hyphens are allowed.</span>
+      </div>
+    </div>
+
+    <!-- Right side additional fields -->
+    <div style="display: flex; flex-direction: column; gap: 1.25rem; justify-content: space-between;">
+      <div class="form-group" style="margin: 0;">
+        <label for="tags">Tags (comma separated)</label>
+        <input type="text" id="tags" name="tags" value="<%= post.tags %>" class="form-control" placeholder="Node.js, Express, SQLite">
+      </div>
+
+      <div class="form-group" style="margin: 0; display: flex; flex-direction: row; align-items: center; gap: 0.75rem; border: 1px solid var(--border-color); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); background-color: var(--bg-surface); height: 100%; max-height: 52px; align-self: flex-end; width: 100%;">
+        <input type="checkbox" id="is_published" name="is_published" value="1" <%= post.is_published === 1 ? 'checked' : '' %> style="width: 1.2rem; height: 1.2rem; cursor: pointer; accent-color: var(--accent);">
+        <label for="is_published" style="cursor: pointer; margin: 0; user-select: none;">Publish immediately</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group" style="margin: 0;">
+    <label for="summary">Summary</label>
+    <textarea id="summary" name="summary" rows="2" class="form-control" placeholder="A brief summary of this post. It will be displayed on the blog list page..." style="resize: vertical;"><%= post.summary %></textarea>
+  </div>
+
+  <!-- Editor and Preview Layout -->
+  <div>
+    <label style="font-size: 0.9rem; font-weight: 600; color: var(--text-secondary);">Content (Supports Markdown & Syntax Highlighting)</label>
+    <div class="editor-layout">
+      <!-- Editor Pane -->
+      <div class="editor-pane">
+        <div class="pane-header">
+          <span>MARKDOWN SOURCE</span>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">EDITOR</span>
+        </div>
+        <div class="pane-content">
+          <textarea id="content" name="content" required class="editor-textarea" placeholder="Write your post content in Markdown here..."><%= post.content %></textarea>
+        </div>
+      </div>
+
+      <!-- Preview Pane -->
+      <div class="preview-pane">
+        <div class="pane-header">
+          <span>LIVE PREVIEW</span>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent);">PREVIEW</span>
+        </div>
+        <div class="pane-content blog-content preview-content" id="preview-area">
+          <!-- Dynamic rendering via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+    <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; font-weight: 600;">💾 Save Post</button>
+    <a href="/admin/posts" class="btn btn-secondary" style="padding: 0.75rem 2rem;">Cancel</a>
+  </div>
+</form>
+
+<!-- Live Editor Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const editor = document.getElementById('content');
+    const previewArea = document.getElementById('preview-area');
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+    const genSlugBtn = document.getElementById('btn-gen-slug');
+
+    // 1. Live Preview Logic
+    function updatePreview() {
+      const rawMarkdown = editor.value;
+      const html = marked.parse(rawMarkdown);
+      previewArea.innerHTML = html;
+      
+      // Code syntax highlighting
+      previewArea.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightElement(block);
+      });
+    }
+
+    editor.addEventListener('input', updatePreview);
+    
+    // Initial rendering
+    updatePreview();
+
+    // 2. Slug Auto-generation
+    genSlugBtn.addEventListener('click', () => {
+      const titleValue = titleInput.value.trim();
+      if (!titleValue) {
+        alert('Please enter a title first!');
+        return;
+      }
+      
+      let slug = titleValue
+        .toLowerCase()
+        .replace(/[^a-z0-9\u4e00-\u9fa5 -]/g, '') // Keep Chinese characters, letters, numbers, spaces, and hyphens
+        .replace(/\s+/g, '-')                     // Replace spaces with hyphens
+        .replace(/-+/g, '-');                     // Remove duplicate hyphens
+
+      if (!slug || slug === '-') {
+        slug = 'post-' + Date.now().toString().slice(-6);
+      }
+      
+      slugInput.value = encodeURI(slug);
+    });
+
+    // Limit Slug input format
+    slugInput.addEventListener('keypress', (e) => {
+      const allowedChars = /^[a-z0-9-]$/;
+      if (!allowedChars.test(e.key) && e.key !== 'Enter') {
+        e.preventDefault();
+      }
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

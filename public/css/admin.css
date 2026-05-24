@@ -1,0 +1,213 @@
+/* ==================== 后台管理专用样式 ==================== */
+
+/* 管理面板卡片与按钮辅助 */
+.admin-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* 简约高级表格 */
+.admin-table-wrapper {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.admin-table th, .admin-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table th {
+  background-color: rgba(0, 0, 0, 0.15);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background-color: var(--bg-surface-hover);
+}
+
+/* 状态徽章 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-success {
+  background-color: hsla(160, 60%, 50%, 0.15);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.badge-warning {
+  background-color: hsla(35, 100%, 50%, 0.1);
+  color: hsl(35, 100%, 50%);
+  border: 1px solid hsla(35, 100%, 50%, 0.3);
+}
+
+/* 后台表单与分栏编辑器设计 */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-control {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: var(--transition-smooth);
+  outline: none;
+  width: 100%;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+  background-color: var(--bg-surface-hover);
+}
+
+/* 左右分栏编辑器 */
+.editor-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  height: 550px;
+}
+
+.editor-pane, .preview-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  background-color: var(--bg-surface);
+  overflow: hidden;
+}
+
+.pane-header {
+  padding: 0.75rem 1.25rem;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pane-content {
+  flex-grow: 1;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.editor-textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: none;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+}
+
+/* 实时预览内容渲染样式微调 */
+.preview-content {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.preview-content h1, .preview-content h2, .preview-content h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.preview-content p {
+  margin-bottom: 1rem;
+}
+.preview-content code {
+  font-family: var(--font-mono);
+  background-color: var(--bg-base);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+.preview-content pre {
+  background-color: var(--bg-base);
+  border: 1px solid var(--border-color);
+  padding: 1rem;
+  border-radius: var(--border-radius-sm);
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.preview-content pre code {
+  padding: 0;
+  background: none;
+}
+
+/* 按钮组 */
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-xs {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+/* 响应式排版 */
+@media (max-width: 900px) {
+  .editor-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .editor-pane {
+    height: 400px;
+  }
+  .preview-pane {
+    height: 400px;
+    margin-top: 1.5rem;
+  }
+}

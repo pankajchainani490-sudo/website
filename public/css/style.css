@@ -1,0 +1,578 @@
+/* ==================== 1. 设计系统 (CSS Variables) ==================== */
+:root {
+  /* 基础字号与字体 */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', Fira Code, monospace;
+  
+  /* 页面最大宽度 */
+  --max-width: 1000px;
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* === 暗色模式 (默认主题) === */
+  --bg-base: hsl(220, 15%, 8%);
+  --bg-surface: hsl(220, 13%, 12%);
+  --bg-surface-hover: hsl(220, 13%, 16%);
+  --border-color: hsl(220, 12%, 18%);
+  --border-color-hover: hsl(220, 12%, 26%);
+  
+  --text-primary: hsl(220, 10%, 94%);
+  --text-secondary: hsl(220, 8%, 65%);
+  --text-muted: hsl(220, 6%, 45%);
+  
+  --primary: hsl(220, 70%, 55%);
+  --primary-hover: hsl(220, 80%, 60%);
+  --primary-glow: hsla(220, 70%, 55%, 0.15);
+  
+  --accent: hsl(160, 60%, 50%);
+  --accent-glow: hsla(160, 60%, 50%, 0.15);
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.5);
+
+  --gradient-rainbow: linear-gradient(135deg, hsl(220, 70%, 55%), hsl(280, 60%, 55%), hsl(340, 65%, 55%));
+}
+
+/* === 亮色模式 === */
+[data-theme="light"] {
+  --bg-base: hsl(220, 20%, 97%);
+  --bg-surface: hsl(0, 0%, 100%);
+  --bg-surface-hover: hsl(220, 20%, 94%);
+  --border-color: hsl(220, 15%, 88%);
+  --border-color-hover: hsl(220, 15%, 80%);
+  
+  --text-primary: hsl(220, 25%, 15%);
+  --text-secondary: hsl(220, 15%, 40%);
+  --text-muted: hsl(220, 10%, 60%);
+  
+  --primary: hsl(220, 80%, 50%);
+  --primary-hover: hsl(220, 90%, 55%);
+  --primary-glow: hsla(220, 80%, 50%, 0.08);
+  
+  --accent: hsl(160, 70%, 35%);
+  --accent-glow: hsla(160, 70%, 35%, 0.08);
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* ==================== 2. 全局基础样式 ==================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius-md);
+}
+
+/* 现代网格背景效果 (极简发光) */
+.bg-grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: 
+    radial-gradient(var(--border-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(circle at 50% 30%, black, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, black, transparent 80%);
+  opacity: 0.7;
+}
+
+/* ==================== 3. 布局 & 导航 ==================== */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* 导航栏 */
+header.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(8, 9, 10, 0.7);
+  transition: var(--transition-smooth);
+}
+[data-theme="light"] header.navbar {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+}
+
+.nav-logo {
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.5px;
+  background: var(--gradient-rainbow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.nav-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text-primary);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 暗色模式切换按钮 */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-color-hover);
+}
+
+.theme-toggle svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: currentColor;
+}
+
+/* 主内容区域弹性填充 */
+main.main-content {
+  flex: 1;
+  padding: 3rem 0;
+}
+
+/* 页脚 */
+footer.site-footer {
+  border-top: 1px solid var(--border-color);
+  padding: 2rem 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== 4. 公用 UI 组件 ==================== */
+
+/* 渐变标题 */
+.gradient-text {
+  background: var(--gradient-rainbow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 按钮样式 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.btn-secondary {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-color-hover);
+}
+
+/* 精美卡片 (Glassmorphism & Border Gradient Glow) */
+.card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  transition: var(--transition-bounce);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-color-hover);
+  box-shadow: var(--shadow-md);
+}
+
+/* ==================== 5. 首页 (Hero & Grid) ==================== */
+.hero-section {
+  text-align: center;
+  padding: 4rem 0 5rem 0;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--primary-glow);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  animation: pulse 2s infinite;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -2px;
+  margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* 首页区块 */
+.section-title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  margin-top: 4rem;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.section-more {
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.section-more:hover {
+  color: var(--primary-hover);
+}
+
+/* 卡片网格 */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ==================== 6. 博客卡片 & 文章页 ==================== */
+.blog-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.blog-meta {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.blog-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.blog-card-summary {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  flex-grow: 1;
+  margin-bottom: 1.5rem;
+}
+
+.blog-tag {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  background-color: var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* 博客正文页样式 */
+.blog-header {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.blog-header h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.blog-header-meta {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.blog-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.blog-content p {
+  margin-bottom: 1.5rem;
+}
+
+.blog-content h2, .blog-content h3 {
+  margin: 2.5rem 0 1rem 0;
+  letter-spacing: -0.5px;
+}
+
+.blog-content h2 { font-size: 1.75rem; }
+.blog-content h3 { font-size: 1.4rem; }
+
+.blog-content pre {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 1.25rem;
+  border-radius: var(--border-radius-md);
+  overflow-x: auto;
+  margin: 2rem 0;
+}
+
+.blog-content code {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  padding: 0.2rem 0.4rem;
+  background-color: var(--bg-surface);
+  border-radius: 4px;
+}
+
+.blog-content pre code {
+  padding: 0;
+  background: none;
+}
+
+/* ==================== 7. 项目卡片样式 ==================== */
+.project-card {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.project-icon {
+  font-size: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  background-color: var(--border-color);
+  border-radius: var(--border-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.project-info {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.project-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-title svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--text-muted);
+  transition: var(--transition-smooth);
+}
+
+.project-card:hover .project-title svg {
+  transform: translate(2px, -2px);
+  color: var(--primary);
+}
+
+.project-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  flex-grow: 1;
+}
+
+.project-category {
+  font-size: 0.75rem;
+  color: var(--primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== 8. 404 & 动画 ==================== */
+.error-container {
+  text-align: center;
+  padding: 5rem 0;
+}
+
+.error-code {
+  font-size: 6rem;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  background: var(--gradient-rainbow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--primary-glow);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 4px var(--primary-glow);
+  }
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  .nav-links {
+    gap: 1rem;
+  }
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}

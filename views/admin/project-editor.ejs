@@ -1,0 +1,106 @@
+<%- include('../partials/header') %>
+
+<div style="margin-bottom: 2rem;">
+  <a href="/admin/projects" style="font-size: 0.9rem; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 0.25rem; margin-bottom: 0.5rem;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: scaleX(-1);">
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+      <polyline points="12 5 19 12 12 19"></polyline>
+    </svg>
+    Back to List
+  </a>
+  <h1 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -1px;"><%= isEdit ? 'Edit Showcase Project' : 'Add New Showcase Project' %></h1>
+</div>
+
+<div class="card" style="padding: 2.5rem; max-width: 700px; margin: 0 auto 3rem auto;">
+  <form action="<%= isEdit ? '/admin/projects/edit/' + project.id : '/admin/projects/new' %>" method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
+    
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div style="color: hsl(350, 70%, 50%); font-size: 0.9rem; background-color: hsla(350, 70%, 50%, 0.1); padding: 0.75rem; border-radius: var(--border-radius-sm); text-align: center; border: 1px solid hsla(350, 70%, 50%, 0.2);">
+        <%= error %>
+      </div>
+    <% } %>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+      <div class="form-group" style="margin: 0;">
+        <label for="name">Project Name</label>
+        <input type="text" id="name" name="name" required value="<%= project.name %>" class="form-control" placeholder="e.g., My GitHub Profile">
+      </div>
+
+      <div class="form-group" style="margin: 0;">
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" value="<%= project.category %>" class="form-control" placeholder="e.g., GitHub, Web App, Server Tool">
+      </div>
+    </div>
+
+    <div class="form-group" style="margin: 0;">
+      <label for="url">Target URL / Router Link</label>
+      <input type="text" id="url" name="url" required value="<%= project.url %>" class="form-control" placeholder="e.g., https://github.com/profile or http://localhost:8080">
+      <span style="font-size: 0.75rem; color: var(--text-muted);">
+        You can enter an external link (like your GitHub repo) or a URL running on another port of this server (like http://localhost:8080).
+      </span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+      <div class="form-group" style="margin: 0;">
+        <label for="icon">Project Icon (Supports image URL or Emoji 🚀)</label>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="text" id="icon" name="icon" value="<%= project.icon %>" class="form-control" placeholder="e.g., 🚀, 🐙, ☀️, 📈" style="text-align: center; font-size: 1.25rem;">
+          <div style="font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap;">
+            Quick insert:
+            <span class="emoji-picker" style="cursor: pointer; padding: 0.2rem; font-size: 1.1rem;">🐙</span>
+            <span class="emoji-picker" style="cursor: pointer; padding: 0.2rem; font-size: 1.1rem;">💻</span>
+            <span class="emoji-picker" style="cursor: pointer; padding: 0.2rem; font-size: 1.1rem;">☀️</span>
+            <span class="emoji-picker" style="cursor: pointer; padding: 0.2rem; font-size: 1.1rem;">⚙️</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin: 0;">
+        <label for="sort_order">Sort Order (smaller numbers display first)</label>
+        <input type="number" id="sort_order" name="sort_order" required value="<%= project.sort_order %>" class="form-control" min="0" placeholder="0">
+      </div>
+    </div>
+
+    <div class="form-group" style="margin: 0;">
+      <label for="description">Project Description</label>
+      <textarea id="description" name="description" rows="3" class="form-control" placeholder="Briefly introduce your project features and tech stack, it will be displayed in the project card..." style="resize: vertical;"><%= project.description %></textarea>
+    </div>
+
+    <div class="form-group" style="margin: 0; display: flex; flex-direction: row; align-items: center; gap: 0.75rem; border: 1px solid var(--border-color); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); background-color: var(--bg-base); width: 100%;">
+      <input type="checkbox" id="is_visible" name="is_visible" value="1" <%= project.is_visible === 1 ? 'checked' : '' %> style="width: 1.2rem; height: 1.2rem; cursor: pointer; accent-color: var(--accent);">
+      <label for="is_visible" style="cursor: pointer; margin: 0; user-select: none;">Publicly showcase this project on the website</label>
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+      <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2.5rem; font-weight: 600;">💾 Save Project</button>
+      <a href="/admin/projects" class="btn btn-secondary" style="padding: 0.75rem 2rem;">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iconInput = document.getElementById('icon');
+    const pickers = document.querySelectorAll('.emoji-picker');
+
+    pickers.forEach(picker => {
+      picker.addEventListener('click', () => {
+        iconInput.value = picker.textContent.trim();
+      });
+    });
+
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+      input.addEventListener('focus', () => {
+        input.style.borderColor = 'var(--primary)';
+        input.style.boxShadow = '0 0 0 2px var(--primary-glow)';
+      });
+      input.addEventListener('blur', () => {
+        input.style.borderColor = 'var(--border-color)';
+        input.style.boxShadow = 'none';
+      });
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>
