@@ -5,6 +5,21 @@
   <p style="color: var(--text-secondary);">Documenting development journey, reflections, and interesting practical cases.</p>
 </div>
 
+<!-- Dynamic Tag Filter Panel -->
+<% if (uniqueTags && uniqueTags.length > 0) { %>
+  <div class="tags-filter-bar" style="display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
+    <a href="/blog" class="btn <%= !selectedTag ? 'btn-primary' : 'btn-secondary' %>" style="padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 9999px; font-weight: 600;">
+      All
+    </a>
+    <% uniqueTags.forEach(tag => { %>
+      <a href="/blog?tag=<%= tag %>" class="btn <%= selectedTag === tag ? 'btn-primary' : 'btn-secondary' %>" style="padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 9999px; font-weight: 600;">
+        <%= tag %>
+      </a>
+    <% }) %>
+  </div>
+<% } %>
+
+<!-- Blog Cards Grid -->
 <div class="card-grid">
   <% if (posts && posts.length > 0) { %>
     <% posts.forEach(post => { %>
@@ -12,7 +27,11 @@
         <div class="blog-meta">
           <time><%= new Date(post.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}) %></time>
           <% if (post.tags) { %>
-            <span class="blog-tag"><%= post.tags.split(',')[0] %></span>
+            <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+              <% post.tags.split(',').forEach(tag => { %>
+                <span class="blog-tag" style="font-size: 0.7rem;"><%= tag.trim() %></span>
+              <% }) %>
+            </div>
           <% } %>
         </div>
         <h3 class="blog-card-title">
@@ -24,10 +43,44 @@
     <% }) %>
   <% } else { %>
     <div class="card" style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); padding: 5rem 3rem;">
-      <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">It's empty here. No blog articles have been published yet.</p>
-      <a href="/admin" class="btn btn-primary">Create one in Dashboard</a>
+      <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">No blog articles found <%= selectedTag ? 'for tag "' + selectedTag + '"' : '' %>.</p>
+      <a href="/blog" class="btn btn-primary">Clear Tag Filter</a>
     </div>
   <% } %>
 </div>
+
+<!-- Elegant Pagination Controls -->
+<% if (totalPages > 1) { %>
+  <div class="pagination-bar" style="display: flex; justify-content: center; align-items: center; gap: 0.4rem; margin-top: 4rem;">
+    <!-- Prev Button -->
+    <% if (currentPage > 1) { %>
+      <a href="/blog?page=<%= currentPage - 1 %><%= selectedTag ? '&tag=' + selectedTag : '' %>" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600;">
+        &larr; Prev
+      </a>
+    <% } else { %>
+      <button class="btn btn-secondary" disabled style="opacity: 0.4; cursor: not-allowed; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600;">
+        &larr; Prev
+      </button>
+    <% } %>
+
+    <!-- Page Number Links -->
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="/blog?page=<%= i %><%= selectedTag ? '&tag=' + selectedTag : '' %>" class="btn <%= currentPage === i ? 'btn-primary' : 'btn-secondary' %>" style="padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 600; min-width: 2.25rem; text-align: center;">
+        <%= i %>
+      </a>
+    <% } %>
+
+    <!-- Next Button -->
+    <% if (currentPage < totalPages) { %>
+      <a href="/blog?page=<%= currentPage + 1 %><%= selectedTag ? '&tag=' + selectedTag : '' %>" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600;">
+        Next &rarr;
+      </a>
+    <% } else { %>
+      <button class="btn btn-secondary" disabled style="opacity: 0.4; cursor: not-allowed; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600;">
+        Next &rarr;
+      </button>
+    <% } %>
+  </div>
+<% } %>
 
 <%- include('../partials/footer') %>

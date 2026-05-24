@@ -58,13 +58,49 @@ app.get('/', (req, res) => {
   }
 });
 
-// Blog List Page
+// Blog List Page (With Pagination & Tag Filtering)
 app.get('/blog', (req, res) => {
   try {
-    const posts = db.prepare('SELECT * FROM posts WHERE is_published = 1 ORDER BY created_at DESC').all();
+    const limit = 6;
+    const currentPage = parseInt(req.query.page, 10) || 1;
+    const offset = (currentPage - 1) * limit;
+    const selectedTag = req.query.tag ? req.query.tag.trim() : '';
+
+    // 1. Dynamic Tags Extraction (Extract & de-duplicate tags from all published blogs)
+    const allTagsRows = db.prepare('SELECT tags FROM posts WHERE is_published = 1').all();
+    const tagSet = new Set();
+    allTagsRows.forEach(row => {
+      if (row.tags) {
+        row.tags.split(',').forEach(tag => {
+          const trimmed = tag.trim();
+          if (trimmed) tagSet.add(trimmed);
+        });
+      }
+    });
+    const uniqueTags = Array.from(tagSet);
+
+    // 2. Fetch Posts & Count based on Tag Filter
+    let posts;
+    let totalCount;
+
+    if (selectedTag) {
+      const tagLike = `%${selectedTag}%`;
+      totalCount = db.prepare('SELECT COUNT(*) as count FROM posts WHERE is_published = 1 AND tags LIKE ?').get(tagLike).count;
+      posts = db.prepare('SELECT * FROM posts WHERE is_published = 1 AND tags LIKE ? ORDER BY created_at DESC LIMIT ? OFFSET ?').all(tagLike, limit, offset);
+    } else {
+      totalCount = db.prepare('SELECT COUNT(*) as count FROM posts WHERE is_published = 1').get().count;
+      posts = db.prepare('SELECT * FROM posts WHERE is_published = 1 ORDER BY created_at DESC LIMIT ? OFFSET ?').all(limit, offset);
+    }
+
+    const totalPages = Math.ceil(totalCount / limit) || 1;
+
     res.render('public/blog-list', {
       title: 'Blog',
-      posts
+      posts,
+      uniqueTags,
+      selectedTag,
+      currentPage,
+      totalPages
     });
   } catch (error) {
     console.error('Error loading blog list:', error);
